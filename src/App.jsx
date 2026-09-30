@@ -1,10 +1,10 @@
-
 import { lazy, Suspense, useState } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
+
 import Layout from "./ui/Layout.jsx";
 import Menu from "./menu/Menu.jsx";
 import Cart from "./cart/Cart.jsx";
-import { useCart } from "./cart/CartContext.jsx";
+import { useCartStore } from "./cart/cartStore.js";
 
 const DishDetail = lazy(() => import("./menu/DishDetail.jsx"));
 
@@ -18,7 +18,7 @@ function Home() {
 }
 
 function CheckoutPage() {
-  const { items } = useCart();
+  const items = useCartStore((state) => state.items);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -58,8 +58,11 @@ function CheckoutPage() {
 
     if (!formData.phone.trim()) {
       newErrors.phone = "Phone number is required.";
-    } else if (!/^(?:\+251|0)9\d{8}$/.test(formData.phone)) {
-      newErrors.phone = "Enter a valid Ethiopian phone number.";
+    } else if (
+      !/^(?:\+251|0)9\d{8}$/.test(formData.phone)
+    ) {
+      newErrors.phone =
+        "Enter a valid Ethiopian phone number.";
     }
 
     if (!formData.area.trim()) {
@@ -177,7 +180,10 @@ function App() {
 
         <Route path="cart" element={<Cart />} />
 
-        <Route path="checkout" element={<CheckoutPage />} />
+        <Route
+          path="checkout"
+          element={<CheckoutPage />}
+        />
 
         <Route path="*" element={<NotFound />} />
       </Route>

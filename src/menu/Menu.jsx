@@ -2,10 +2,12 @@ import { useEffect, useState } from "react";
 import CategoryBar from "./CategoryBar.jsx";
 import DishList from "./DishList.jsx";
 import { getDishes } from "../api/dishes.js";
-import { useCart } from "../cart/CartContext.jsx";
+import { useCartStore } from "../cart/cartStore.js";
 
 function Menu() {
-  const { addToCart } = useCart();
+  const addToCart = useCartStore(
+    (state) => state.addToCart
+  );
 
   const [dishes, setDishes] = useState([]);
   const [category, setCategory] = useState("All");
@@ -52,7 +54,9 @@ function Menu() {
   const filteredDishes =
     category === "All"
       ? dishes
-      : dishes.filter((dish) => dish.category === category);
+      : dishes.filter(
+          (dish) => dish.category === category
+        );
 
   return (
     <section>
@@ -63,10 +67,10 @@ function Menu() {
         onSelect={setCategory}
       />
 
-     <DishList
-  dishes={filteredDishes}
-  onAdd={addToCart}
-/>
+      <DishList
+        dishes={filteredDishes}
+        onAdd={addToCart}
+      />
     </section>
   );
 }
